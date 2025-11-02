@@ -1,0 +1,104 @@
+{
+  "hamburgers": {
+    "Hamburger": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+    "Hamburger Royal": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400",
+    "Double Burger": "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400",
+    "Cheese Burger": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400",
+    "Hamburger Poulet": "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400"
+  },
+  "chawarma": {
+    "Chawarma Viande": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400",
+    "Chawarma Poulet": "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400",
+    "Chawarma Royal": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400",
+    "Chawarma Mixte": "https://images.unsplash.com/photo-1623343683412-0b7d456efdcd?w=400"
+  },
+  "norvegien": {
+    "Norvégien": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400",
+    "Double Norvégien": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400"
+  },
+  "pachas": {
+    "Pachas Poulet": "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400",
+    "Pachas Viande": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400"
+  },
+  "wraps": {
+    "Wrap's Steak": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400",
+    "Wrap's Poulet": "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400"
+  },
+  "tacos": {
+    "Tacos Viande": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400",
+    "Tacos Poulet": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400",
+    "Tacos Mix Viande et Poulet": "https://images.unsplash.com/photo-1604467715878-83e57e08ae97?w=400",
+    "Tacos Royal": "https://images.unsplash.com/photo-1613514785940-daed07799d9b?w=400",
+    "Tacos Merguez": "https://images.unsplash.com/photo-1599974182630-f0d9642f85fd?w=400"
+  },
+  "sandwich": {
+    "Sandwich Viande Steak": "https://images.unsplash.com/photo-1528736235302-52922df5c122?w=400",
+    "Sandwich Viande Hachée": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400",
+    "Sandwich Merguez": "https://images.unsplash.com/photo-1592415499556-fa132a31e1c0?w=400",
+    "Sandwich Poulet": "https://images.unsplash.com/photo-1619740455993-9e0291e69d25?w=400",
+    "Sandwich Mixte Poulet Viande": "https://images.unsplash.com/photo-1621852004158-f3bc188ace2d?w=400"
+  },
+  "panini": {
+    "Panini Poulet": "https://images.unsplash.com/photo-1528736235302-52922df5c122?w=400",
+    "Panini Viande": "https://images.unsplash.com/photo-1592415499556-fa132a31e1c0?w=400",
+    "Panini Jambon Fromage": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400"
+  },
+  "fataya": {
+    "Fataya Complet": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400",
+    "Fataya Poulet": "https://images.unsplash.com/photo-1612810436541-e054aad9e12a?w=400"
+  },
+  "frites": {
+    "Frites Simples": "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=400",
+    "Frites Moyennes": "https://images.unsplash.com/photo-1598679253544-2c97992403ea?w=400",
+    "Frites Grandes": "https://images.unsplash.com/photo-1630431341973-02e1d5c36fdb?w=400",
+    "Barquette Frites Petite": "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=400",
+    "Barquette Frites Moyenne": "https://images.unsplash.com/photo-1598679253544-2c97992403ea?w=400",
+    "Barquette Frites Grande": "https://images.unsplash.com/photo-1630431341973-02e1d5c36fdb?w=400"
+  },
+  "accompagnements": {
+    "Cordon Bleu": "https://images.unsplash.com/photo-1633504581786-316c8002b1e9?w=400",
+    "Wing's Chicken": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400"
+  },
+  "pizza": {
+    "Pizza PM (26cm)": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
+    "Pizza GM (29cm)": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400",
+    "Pizza XL (33cm)": "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?w=400"
+  },
+  "specialites": {
+    "Plateau Familiale": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400",
+    "Menu Complet": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400"
+  },
+  "poulet-grille": {
+    "Poulet Entier": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400",
+    "Demi Poulet": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400",
+    "Cuisse de Poulet": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400"
+  },
+  "jus": {
+    "Jus Naturel Gobelet": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400",
+    "Gingembre Bouteille 1L": "https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400",
+    "Mangue Bouteille 1L": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400",
+    "Bissap Bouteille 1L": "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=400",
+    "Bouye Bouteille 1L": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400",
+    "Moringa Bouteille 1L": "https://images.unsplash.com/photo-1598512165948-d4d0090e87d9?w=400",
+    "Cocktail Bouteille 1L": "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
+    "Jus Naturel Bouteille": "https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400",
+    "Jus Cocktail": "https://images.unsplash.com/photo-1546173159-315724a31696?w=400",
+    "Jus d'Orange": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400",
+    "Jus de Mangue": "https://images.unsplash.com/photo-1589203760291-2e4e1e7719bc?w=400",
+    "Jus de Bissap": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400",
+    "Jus de Gingembre": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400",
+    "Smoothie Mixte": "https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=400"
+  },
+  "cafe": {
+    "Café Cappuccino": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400",
+    "Café Espresso": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400",
+    "Café Lungo": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
+    "Chocolat Chaud": "https://images.unsplash.com/photo-1517578239113-b03992dcdd25?w=400",
+    "Thé Lipton": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400",
+    "Café Noir": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
+    "Café au Lait": "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400",
+    "Cappuccino": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400",
+    "Espresso": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400",
+    "Café Nescafé": "https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=400"
+  }
+}

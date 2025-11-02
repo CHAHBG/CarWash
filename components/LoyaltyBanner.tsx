@@ -1,0 +1,71 @@
+/**
+ * Composant de bannière de fidélisation
+ * Incite les utilisateurs non connectés à créer un compte
+ */
+
+import { View, Text, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import useAuthStore from '@/store/auth.store';
+
+interface LoyaltyBannerProps {
+    showOnHome?: boolean;
+    onDismiss?: () => void;
+}
+
+const LoyaltyBanner = ({ showOnHome = false, onDismiss }: LoyaltyBannerProps) => {
+    const { isAuthenticated } = useAuthStore();
+
+    // Ne pas afficher si l'utilisateur est connecté
+    if (isAuthenticated) return null;
+
+    const handleSignUp = () => {
+        router.push('/sign-up');
+    };
+    return (
+        <View
+            className="border rounded-2xl p-4"
+            style={{ backgroundColor: '#FFF6DF', borderColor: '#FCD34D' }}
+        >
+            <View className="flex-row items-start">
+                <Text className="text-2xl mr-3">🎁</Text>
+                <View className="flex-1">
+                    <Text className="text-base font-bold text-dark-100">
+                        Points fidélité disponibles
+                    </Text>
+                    <Text className="text-sm text-gray-700 mt-1">
+                        {showOnHome
+                            ? "Activez votre compte pour débloquer les avantages et suivre vos points."
+                            : "En créant un compte, vos commandes génèrent automatiquement des récompenses."
+                        }
+                    </Text>
+                </View>
+                {onDismiss && (
+                    <TouchableOpacity onPress={onDismiss} className="-mt-1 ml-2">
+                        <Text className="text-gray-400 text-lg">×</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <TouchableOpacity
+                onPress={handleSignUp}
+                className="mt-4 py-3 rounded-full items-center"
+                style={{ backgroundColor: '#E63946' }}
+            >
+                <Text className="text-white font-semibold text-base">
+                    Créer mon compte
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => router.push('/sign-in')}
+                className="mt-2 py-2 items-center"
+            >
+                <Text className="text-sm" style={{ color: '#E63946' }}>
+                    J&apos;ai déjà un compte
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+export default LoyaltyBanner;

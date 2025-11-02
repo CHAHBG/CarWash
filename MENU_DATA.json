@@ -1,0 +1,489 @@
+{
+  "categories": [
+    {"name": "Hamburgers", "icon": "🍔", "order": 1, "slug": "hamburgers"},
+    {"name": "Chawarma", "icon": "🌯", "order": 2, "slug": "chawarma"},
+    {"name": "Norvégien", "icon": "🌭", "order": 3, "slug": "norvegien"},
+    {"name": "Pachas", "icon": "🥙", "order": 4, "slug": "pachas"},
+    {"name": "Wrap", "icon": "🌮", "order": 5, "slug": "wrap"},
+    {"name": "Tacos", "icon": "🌮", "order": 6, "slug": "tacos"},
+    {"name": "Sandwich", "icon": "🥖", "order": 7, "slug": "sandwich"},
+    {"name": "Fataya", "icon": "🥟", "order": 8, "slug": "fataya"},
+    {"name": "Panini", "icon": "🥪", "order": 9, "slug": "panini"},
+    {"name": "Frites", "icon": "🍟", "order": 10, "slug": "frites"},
+    {"name": "Spécialités", "icon": "🍗", "order": 11, "slug": "specialites"},
+    {"name": "Pizza", "icon": "🍕", "order": 12, "slug": "pizza"},
+    {"name": "Poulet Grillé", "icon": "🍗", "order": 13, "slug": "poulet-grille"},
+    {"name": "Jus Naturel", "icon": "🥤", "order": 14, "slug": "jus"},
+    {"name": "Café", "icon": "☕", "order": 15, "slug": "cafe"}
+  ],
+  "menu": [
+    {
+      "name": "Hamburger",
+      "description": "Pain hamburger + steak burger + frites + œuf + fromage emmental + crudité + sauce burger + mayonnaise ketchup",
+      "price": 1500,
+      "category": "hamburgers",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Hamburger Royal",
+      "description": "Pain hamburger + viande kebab + sauce œuf burger + frites + fromage cheddar + crudité + ketchup et mayonnaise",
+      "price": 2000,
+      "category": "hamburgers",
+      "available": true,
+      "featured": true,
+      "order": 2
+    },
+    {
+      "name": "Double Burger",
+      "description": "Pain hamburger coupé par 3 + 2 steak burger + sauce burger + fromage emmental + fromage cheddar + œuf + frites et crudité",
+      "price": 2000,
+      "category": "hamburgers",
+      "available": true,
+      "featured": true,
+      "order": 3
+    },
+    {
+      "name": "Cheese Burger",
+      "description": "Pain hamburger + viande kebab + sauce burger + sauce fromage + fromage emmental + fromage cheddar",
+      "price": 2000,
+      "category": "hamburgers",
+      "available": true,
+      "featured": false,
+      "order": 4
+    },
+    {
+      "name": "Hamburger Poulet",
+      "description": "Pain hamburger + filet de poulet bien cuit et fromage emmental + frite et sauce burger",
+      "price": 2000,
+      "category": "hamburgers",
+      "available": true,
+      "featured": false,
+      "order": 5
+    },
+    {
+      "name": "Chawarma Viande",
+      "description": "Pain arabe + viande kebab + sauce tahini + sauce blanche + frites + moutarde et crudité",
+      "price": 1500,
+      "category": "chawarma",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Chawarma Poulet",
+      "description": "Pain arabe + filets de poulet + sauce tahini + sauce blanche + frites",
+      "price": 2000,
+      "category": "chawarma",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Chawarma Royal",
+      "description": "Pain arabe + viande kebab bien cuit + sauce blanche + fromage emmental + sauce tahini + frites et œuf + moutarde",
+      "price": 2000,
+      "category": "chawarma",
+      "available": true,
+      "featured": true,
+      "order": 3
+    },
+    {
+      "name": "Chawarma Mixte",
+      "description": "Pain arabe + filets de poulet + viande kebab + sauce tahini + sauce blanche + frites",
+      "price": 2000,
+      "category": "chawarma",
+      "available": true,
+      "featured": true,
+      "order": 4
+    },
+    {
+      "name": "Norvégien",
+      "description": "Pain arabe + mayonnaise + hot dog viande + moutarde ketchup fromage emmental + frites et œuf",
+      "price": 1500,
+      "category": "norvegien",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Double Norvégien",
+      "description": "Pain arabe + œuf + moutarde et fromage emmental + frites et crudité + 2 merguez",
+      "price": 2000,
+      "category": "norvegien",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Pachas Poulet",
+      "description": "Pain arabe + filets de poulet et merguez à la viande + frites et crudité mayonnaise ketchup",
+      "price": 2500,
+      "category": "pachas",
+      "available": true,
+      "featured": true,
+      "order": 1
+    },
+    {
+      "name": "Pachas Viande",
+      "description": "Pain arabe + steak haché et merguez à la viande + frites et crudité mayonnaise ketchup",
+      "price": 2000,
+      "category": "pachas",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Wrap's Steak",
+      "description": "Pain arabe + frite et fromage emmental + œuf + viande steak sauce burger et crudité",
+      "price": 1500,
+      "category": "wrap",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Wrap's Poulet",
+      "description": "Pain arabe + filets de poulet grillé et fromage emmental + frites et œuf crudité et mayonnaise et ketchup",
+      "price": 2000,
+      "category": "wrap",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Tacos Viande",
+      "description": "Tacos garni de viande, fromage, frites et sauce",
+      "price": 2000,
+      "category": "tacos",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Tacos Poulet",
+      "description": "Tacos garni de poulet, fromage, frites et sauce",
+      "price": 2500,
+      "category": "tacos",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Tacos Mix Viande et Poulet",
+      "description": "Tacos garni de viande et poulet, fromage, frites et sauce",
+      "price": 3000,
+      "category": "tacos",
+      "available": true,
+      "featured": true,
+      "order": 3
+    },
+    {
+      "name": "Tacos Royal",
+      "description": "Tacos garni royal avec viande, poulet, fromage, frites et sauces spéciales",
+      "price": 3000,
+      "category": "tacos",
+      "available": true,
+      "featured": true,
+      "order": 4
+    },
+    {
+      "name": "Tacos Merguez",
+      "description": "Tacos garni de merguez, fromage, frites et sauce",
+      "price": 2000,
+      "category": "tacos",
+      "available": true,
+      "featured": false,
+      "order": 5
+    },
+    {
+      "name": "Sandwich Viande Steak",
+      "description": "Sandwich avec viande steak, crudités et sauce",
+      "price": 1000,
+      "category": "sandwich",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Sandwich Viande Hachée",
+      "description": "Sandwich avec viande hachée, crudités et sauce",
+      "price": 1000,
+      "category": "sandwich",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Sandwich Merguez",
+      "description": "Sandwich avec merguez, crudités et sauce",
+      "price": 1000,
+      "category": "sandwich",
+      "available": true,
+      "featured": false,
+      "order": 3
+    },
+    {
+      "name": "Sandwich Poulet",
+      "description": "Sandwich avec poulet grillé, crudités et sauce",
+      "price": 1500,
+      "category": "sandwich",
+      "available": true,
+      "featured": false,
+      "order": 4
+    },
+    {
+      "name": "Sandwich Mixte Poulet Viande",
+      "description": "Sandwich avec poulet et viande, crudités et sauce",
+      "price": 1500,
+      "category": "sandwich",
+      "available": true,
+      "featured": false,
+      "order": 5
+    },
+    {
+      "name": "Fataya Complet",
+      "description": "Fataya traditionnel garni",
+      "price": 1000,
+      "category": "fataya",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Fataya Poulet",
+      "description": "Fataya garni de poulet",
+      "price": 1500,
+      "category": "fataya",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Panini Poulet",
+      "description": "Panini grillé avec poulet et fromage",
+      "price": 2000,
+      "category": "panini",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Panini Jambon Fromage",
+      "description": "Panini grillé avec jambon et fromage",
+      "price": 2000,
+      "category": "panini",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Panini Viande",
+      "description": "Panini grillé avec viande et fromage",
+      "price": 2000,
+      "category": "panini",
+      "available": true,
+      "featured": false,
+      "order": 3
+    },
+    {
+      "name": "Barquette Frites Petite",
+      "description": "Portion de frites fraîches",
+      "price": 1000,
+      "category": "frites",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Barquette Frites Moyenne",
+      "description": "Portion moyenne de frites fraîches",
+      "price": 2000,
+      "category": "frites",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Barquette Frites Grande",
+      "description": "Grande portion de frites fraîches",
+      "price": 3000,
+      "category": "frites",
+      "available": true,
+      "featured": false,
+      "order": 3
+    },
+    {
+      "name": "Cordon Bleu",
+      "description": "Cordon bleu fait maison avec frites",
+      "price": 3000,
+      "category": "specialites",
+      "available": true,
+      "featured": true,
+      "order": 1
+    },
+    {
+      "name": "Wing's Chicken",
+      "description": "Ailes de poulet croustillantes avec frites",
+      "price": 3000,
+      "category": "specialites",
+      "available": true,
+      "featured": true,
+      "order": 2
+    },
+    {
+      "name": "Pizza PM (26cm)",
+      "description": "Pizza petite taille 26cm avec garniture au choix",
+      "price": 3000,
+      "category": "pizza",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Pizza GM (29cm)",
+      "description": "Pizza moyenne taille 29cm avec garniture au choix",
+      "price": 4000,
+      "category": "pizza",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Pizza XL (33cm)",
+      "description": "Pizza grande taille 33cm avec garniture au choix",
+      "price": 5000,
+      "category": "pizza",
+      "available": true,
+      "featured": true,
+      "order": 3
+    },
+    {
+      "name": "Poulet Entier",
+      "description": "Poulet entier grillé avec accompagnement",
+      "price": 6000,
+      "category": "poulet-grille",
+      "available": true,
+      "featured": true,
+      "order": 1
+    },
+    {
+      "name": "Demi Poulet",
+      "description": "Demi poulet grillé avec accompagnement",
+      "price": 3000,
+      "category": "poulet-grille",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Jus Naturel Gobelet",
+      "description": "Jus naturel frais au choix (gingembre, bissap, bouye, etc.)",
+      "price": 500,
+      "category": "jus",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Gingembre Bouteille 1L",
+      "description": "Jus de gingembre naturel 1 litre",
+      "price": 1500,
+      "category": "jus",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Mangue Bouteille 1L",
+      "description": "Jus de mangue naturel 1 litre",
+      "price": 2000,
+      "category": "jus",
+      "available": true,
+      "featured": true,
+      "order": 3
+    },
+    {
+      "name": "Bissap Bouteille 1L",
+      "description": "Jus de bissap naturel 1 litre",
+      "price": 1500,
+      "category": "jus",
+      "available": true,
+      "featured": false,
+      "order": 4
+    },
+    {
+      "name": "Bouye Bouteille 1L",
+      "description": "Jus de bouye (pain de singe) naturel 1 litre",
+      "price": 2000,
+      "category": "jus",
+      "available": true,
+      "featured": false,
+      "order": 5
+    },
+    {
+      "name": "Moringa Bouteille 1L",
+      "description": "Jus de moringa naturel 1 litre",
+      "price": 2000,
+      "category": "jus",
+      "available": true,
+      "featured": false,
+      "order": 6
+    },
+    {
+      "name": "Cocktail Bouteille 1L",
+      "description": "Cocktail de jus naturels 1 litre",
+      "price": 2000,
+      "category": "jus",
+      "available": true,
+      "featured": true,
+      "order": 7
+    },
+    {
+      "name": "Café Cappuccino",
+      "description": "Café cappuccino onctueux",
+      "price": 500,
+      "category": "cafe",
+      "available": true,
+      "featured": false,
+      "order": 1
+    },
+    {
+      "name": "Café Espresso",
+      "description": "Café espresso corsé",
+      "price": 500,
+      "category": "cafe",
+      "available": true,
+      "featured": false,
+      "order": 2
+    },
+    {
+      "name": "Café Lungo",
+      "description": "Café lungo léger",
+      "price": 500,
+      "category": "cafe",
+      "available": true,
+      "featured": false,
+      "order": 3
+    },
+    {
+      "name": "Chocolat Chaud",
+      "description": "Chocolat chaud crémeux",
+      "price": 500,
+      "category": "cafe",
+      "available": true,
+      "featured": false,
+      "order": 4
+    },
+    {
+      "name": "Thé Lipton",
+      "description": "Thé Lipton chaud",
+      "price": 500,
+      "category": "cafe",
+      "available": true,
+      "featured": false,
+      "order": 5
+    }
+  ]
+}
