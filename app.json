@@ -4,7 +4,7 @@
     "slug": "car-wash-restaurant",
     "version": "1.0.0",
     "orientation": "portrait",
-  "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "carwashrestaurant",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,9 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "Utilisez Face ID pour une connexion rapide et sécurisée à Car Wash Restaurant"
       },
-      "associatedDomains": ["applinks:carwash-restaurant.com"]
+      "associatedDomains": [
+        "applinks:carwash-restaurant.com"
+      ]
     },
     "android": {
       "package": "com.carwash.restaurant",
@@ -38,7 +40,10 @@
               "pathPrefix": "/callback"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -69,6 +74,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ab2d12ec-f246-4ab4-80c1-64a9c9fedb06"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ab2d12ec-f246-4ab4-80c1-64a9c9fedb06"
     }
   }
 }
