@@ -6,8 +6,12 @@
     "internal": {
       "channel": "internal",
       "distribution": "internal",
+      "env": {
+        "SENTRY_SKIP_AUTO_UPLOAD": "1",
+        "SENTRY_UPLOAD_SOURCEMAPS": "0"
+      },
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       },
       "ios": {
         "simulator": false
@@ -15,6 +19,10 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "SENTRY_SKIP_AUTO_UPLOAD": "1",
+        "SENTRY_UPLOAD_SOURCEMAPS": "0"
+      },
       "android": {
         "gradleCommand": ":app:assembleDebug"
       }
