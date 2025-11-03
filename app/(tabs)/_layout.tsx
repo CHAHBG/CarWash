@@ -1,21 +1,53 @@
-import {Redirect, Slot, Tabs} from "expo-router";
-import useAuthStore from "@/store/auth.store";
+import {Tabs} from "expo-router";
 import {TabBarIconProps} from "@/type";
-import {Image, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View, useWindowDimensions} from "react-native";
 import {images} from "@/constants";
 import cn from "clsx";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useMemo} from "react";
 
 const TabBarIcon = ({ focused, icon, title }: TabBarIconProps) => (
-    <View className="tab-icon">
-        <Image source={icon} className="size-7" resizeMode="contain" tintColor={focused ? '#FE8C00' : '#5D5F6D'} />
-        <Text className={cn('text-sm font-bold', focused ? 'text-primary':'text-gray-200')}>
+    <View style={styles.tabIcon}>
+        <Image
+            source={icon}
+            style={styles.iconImage}
+            resizeMode="contain"
+            tintColor={focused ? '#FE8C00' : '#5D5F6D'}
+        />
+        <Text className={cn('text-xs font-bold', focused ? 'text-primary' : 'text-gray-200')}>
             {title}
         </Text>
     </View>
 )
 
 export default function TabLayout() {
-    const { isAuthenticated } = useAuthStore();
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+
+    const isCompactWidth = width < 360;
+    const horizontalMargin = isCompactWidth ? 16 : Math.min(24, width * 0.08);
+    const baseHeight = isCompactWidth ? 56 : 64;
+    const bottomSpacing = Math.max(insets.bottom, 10);
+
+    const tabBarStyle = useMemo(() => ({
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        borderBottomLeftRadius: 32,
+        borderBottomRightRadius: 32,
+        marginHorizontal: horizontalMargin,
+        paddingHorizontal: isCompactWidth ? 16 : 24,
+        paddingTop: 8,
+        paddingBottom: bottomSpacing,
+        height: baseHeight + bottomSpacing,
+        position: 'absolute' as const,
+        bottom: bottomSpacing / 2,
+        backgroundColor: 'white',
+        shadowColor: '#1a1a1a',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        elevation: 6,
+    }), [horizontalMargin, isCompactWidth, bottomSpacing, baseHeight]);
 
     // Ne pas rediriger automatiquement - permettre l'accès en mode invité
     // if(!isAuthenticated) return <Redirect href="/sign-in" />
@@ -24,22 +56,10 @@ export default function TabLayout() {
         <Tabs screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarStyle: {
-                    borderTopLeftRadius: 50,
-                    borderTopRightRadius: 50,
-                    borderBottomLeftRadius: 50,
-                    borderBottomRightRadius: 50,
-                    marginHorizontal: 20,
-                    height: 80,
-                    position: 'absolute',
-                    bottom: 40,
-                    backgroundColor: 'white',
-                    shadowColor: '#1a1a1a',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 5
-                }
+                tabBarStyle,
+                tabBarItemStyle: {
+                    paddingVertical: isCompactWidth ? 6 : 10,
+                },
             }}>
             <Tabs.Screen
                 name='index'
@@ -86,3 +106,15 @@ export default function TabLayout() {
         </Tabs>
     );
 }
+
+const styles = StyleSheet.create({
+    tabIcon: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4,
+    },
+    iconImage: {
+        width: 24,
+        height: 24,
+    },
+});

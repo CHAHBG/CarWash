@@ -1,0 +1,62 @@
+name: Build iOS App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    env:
+      EXPO_NO_TELEMETRY: "1"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate native iOS project
+        run: npx expo prebuild --platform ios --clean --no-install --non-interactive
+
+      - name: Copy ExportOptions template
+        run: cp ../ExportOptions.plist ExportOptions.plist
+        working-directory: ios
+
+      - name: Install CocoaPods
+        run: pod install --repo-update
+        working-directory: ios
+
+      - name: Build .ipa (Debug)
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -workspace CarWashRestaurant.xcworkspace \
+            -scheme CarWashRestaurant \
+            -configuration Debug \
+            -sdk iphoneos \
+            -archivePath "$PWD/build/CarWashRestaurant.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_STYLE=Manual \
+            archive
+
+          xcodebuild \
+            -exportArchive \
+            -archivePath "$PWD/build/CarWashRestaurant.xcarchive" \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath "$PWD/build"
+        working-directory: ios
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: ios/build/*.ipa

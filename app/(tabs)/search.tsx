@@ -1,11 +1,10 @@
-import {FlatList, Text, View} from 'react-native'
-import {SafeAreaView} from "react-native-safe-area-context";
+import {FlatList, Text, View, useWindowDimensions} from 'react-native'
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 import useAppwrite from "@/lib/useAppwrite";
 import {getCategories, getMenu} from "@/lib/appwrite";
 import {useLocalSearchParams} from "expo-router";
 import {useEffect} from "react";
 import CartButton from "@/components/CartButton";
-import cn from "clsx";
 import MenuCard from "@/components/MenuCard";
 import {Category, MenuItem} from "@/type";
 
@@ -15,6 +14,14 @@ import SearchBar from "@/components/SearchBar";
 const Search = () => {
     const params = useLocalSearchParams<{ query?: string | string[]; category?: string | string[] }>();
     const limit = 20;
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+    const isNarrowScreen = width < 360;
+    const horizontalPadding = Math.max(16, Math.min(24, width * 0.06));
+    const columnGap = isNarrowScreen ? 12 : 16;
+    const cardOffset = columnGap * 0.6;
+    const cardWidth = (width - horizontalPadding * 2 - columnGap) / 2;
+    const bottomPadding = Math.max(24, insets.bottom + 24);
 
     const activeCategory = Array.isArray(params.category)
         ? params.category[0]
@@ -36,21 +43,30 @@ const Search = () => {
         <SafeAreaView className="bg-white h-full">
             <FlatList
                 data={data ?? []}
-                renderItem={({ item, index }) => {
-                    const isFirstRightColItem = index % 2 === 0;
-
-                    return (
-                        <View className={cn("flex-1 max-w-[48%]", !isFirstRightColItem ? 'mt-10': 'mt-0')}>
-                            <MenuCard item={item as MenuItem} />
-                        </View>
-                    )
-                }}
+                renderItem={({ item, index }) => (
+                    <View
+                        style={{
+                            width: cardWidth,
+                            marginBottom: columnGap,
+                            marginTop: index % 2 === 1 ? cardOffset : 0,
+                        }}
+                    >
+                        <MenuCard item={item as MenuItem} />
+                    </View>
+                )}
                 keyExtractor={item => item.$id}
                 numColumns={2}
-                columnWrapperClassName="gap-7"
-                contentContainerClassName="gap-7 px-5 pb-32"
+                columnWrapperStyle={{
+                    columnGap,
+                    justifyContent: 'space-between',
+                }}
+                contentContainerStyle={{
+                    paddingHorizontal: horizontalPadding,
+                    paddingBottom: bottomPadding,
+                    paddingTop: 20,
+                }}
                 ListHeaderComponent={() => (
-                    <View className="my-5 gap-5">
+                    <View className="mb-6 gap-5">
                         <View className="flex-between flex-row w-full">
                             <View className="flex-start">
                                 <Text className="small-bold uppercase" style={{color: '#E63946'}}>Rechercher</Text>

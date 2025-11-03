@@ -46,10 +46,12 @@ export default Sentry.wrap(function RootLayout() {
     });
   }, [fetchAuthenticatedUser]);
 
+  useEffect(() => {
+    Sentry.showFeedbackWidget();
+  }, []);
+
   // Ne pas bloquer le rendu si isLoading - permettre la navigation en mode invité
   if(!fontsLoaded) return null;
 
   return <Stack screenOptions={{ headerShown: false }} />;
 });
-
-Sentry.showFeedbackWidget();

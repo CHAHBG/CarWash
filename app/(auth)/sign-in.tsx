@@ -7,6 +7,7 @@ import {signIn} from "@/lib/appwrite";
 import * as Sentry from '@sentry/react-native'
 import { isBiometricAvailable, authenticateWithBiometric } from '@/lib/authServices';
 import {images} from "@/constants";
+import useAuthStore from "@/store/auth.store";
 
 const SignIn = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,6 +16,7 @@ const SignIn = () => {
     const [biometricType, setBiometricType] = useState<string>('');
     const fadeIn = useRef(new Animated.Value(0)).current;
     const slideUp = useRef(new Animated.Value(40)).current;
+    const fetchAuthenticatedUser = useAuthStore((state) => state.fetchAuthenticatedUser);
 
     useEffect(() => {
         checkBiometric();
@@ -49,6 +51,7 @@ const SignIn = () => {
 
         try {
             await signIn({ email, password });
+            await fetchAuthenticatedUser();
 
             router.replace('/');
         } catch(error: any) {

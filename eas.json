@@ -7,8 +7,8 @@
       "channel": "internal",
       "distribution": "internal",
       "env": {
-        "SENTRY_SKIP_AUTO_UPLOAD": "1",
-        "SENTRY_UPLOAD_SOURCEMAPS": "0"
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true",
+        "SENTRY_DISABLE_NATIVE_DEBUG_UPLOAD": "true"
       },
       "android": {
         "buildType": "apk"
@@ -20,8 +20,8 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "SENTRY_SKIP_AUTO_UPLOAD": "1",
-        "SENTRY_UPLOAD_SOURCEMAPS": "0"
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true",
+        "SENTRY_DISABLE_NATIVE_DEBUG_UPLOAD": "true"
       },
       "android": {
         "gradleCommand": ":app:assembleDebug"

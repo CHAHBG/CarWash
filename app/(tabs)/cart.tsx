@@ -1,5 +1,5 @@
-import {View, Text, FlatList, TouchableOpacity, Alert, Image, Linking} from 'react-native'
-import {SafeAreaView} from "react-native-safe-area-context";
+import {View, Text, FlatList, TouchableOpacity, Alert, Image, Linking, useWindowDimensions} from 'react-native'
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 import {useCartStore} from "@/store/cart.store";
 import CustomHeader from "@/components/CustomHeader";
 import cn from "clsx";
@@ -39,6 +39,9 @@ const Cart = () => {
     const { user, isAuthenticated } = useAuthStore();
     const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('cash');
     const [isProcessing, setIsProcessing] = useState(false);
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+    const horizontalPadding = Math.max(16, Math.min(24, width * 0.06));
     
     // Formulaire invité
     const [guestName, setGuestName] = useState(guestInfo?.name || '');
@@ -180,7 +183,11 @@ const Cart = () => {
                 data={items}
                 renderItem={({ item }) => <CartItem item={item} />}
                 keyExtractor={(item) => item.id}
-                contentContainerClassName="pb-28 px-5 pt-5"
+                contentContainerStyle={{
+                    paddingBottom: Math.max(32, insets.bottom + 32),
+                    paddingHorizontal: horizontalPadding,
+                    paddingTop: 20,
+                }}
                 ListHeaderComponent={() => <CustomHeader title="Votre Panier" />}
                 ListEmptyComponent={() => (
                     <Text className="text-center text-gray-500 mt-10">

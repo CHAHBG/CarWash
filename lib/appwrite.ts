@@ -1,4 +1,4 @@
-import {Client, Account, Databases, Storage, ID, Query} from "react-native-appwrite";
+import {Client, Account, Databases, Storage, ID, Query, Permission, Role, AppwriteException} from "react-native-appwrite";
 import {CreateUserPrams, GetMenuParams, SignInParams} from "@/type";
 
 export const appwriteConfig = {
@@ -26,14 +26,55 @@ export const account = new Account(client);
 export const databases = new Databases(client);
 export const storage = new Storage(client);
 
+const getErrorMessage = (error: unknown): string => {
+    if (error instanceof AppwriteException) {
+        if (error.code === 409) {
+            return "Un compte existe déjà avec ces identifiants.";
+        }
+
+        if (error.code === 401) {
+            return "Votre session a expiré. Veuillez vous reconnecter.";
+        }
+
+        return error.message || 'Une erreur est survenue avec Appwrite.';
+    }
+
+    if (error && typeof error === 'object' && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+        return (error as { message: string }).message;
+    }
+
+    return 'Une erreur inattendue est survenue, veuillez réessayer.';
+};
+
+const clearActiveSession = async () => {
+    try {
+        await account.deleteSession('current');
+    } catch (error) {
+        if (error instanceof AppwriteException) {
+            if (error.code === 401 || error.code === 404) {
+                return;
+            }
+        }
+        throw error;
+    }
+};
+
 export const createUser = async ({ email, password, name, phone }: CreateUserPrams) => {
     try {
-        const newAccount = await account.create(ID.unique(), email, password, name)
-        if(!newAccount) throw Error;
+        const newAccount = await account.create(ID.unique(), email, password, name);
+        if (!newAccount) {
+            throw new Error("Impossible de créer le compte utilisateur.");
+        }
 
+        await clearActiveSession();
         await signIn({ email, password });
 
         const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+        const permissions = [
+            Permission.read(Role.user(newAccount.$id)),
+            Permission.update(Role.user(newAccount.$id)),
+            Permission.delete(Role.user(newAccount.$id)),
+        ];
 
         return await databases.createDocument(
             appwriteConfig.databaseId,
@@ -47,26 +88,28 @@ export const createUser = async ({ email, password, name, phone }: CreateUserPra
                 defaultAddress: '',
                 accountId: newAccount.$id,
                 avatar: avatarUrl,
-            }
+            },
+            permissions,
         );
-    } catch (e) {
-        throw new Error(e as string);
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
     }
 }
 
 export const signIn = async ({ email, password }: SignInParams) => {
     try {
+        await clearActiveSession();
         await account.createEmailPasswordSession(email, password);
-    } catch (e) {
-        throw new Error(e as string);
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
     }
 }
 
 export const signOut = async () => {
     try {
         await account.deleteSession('current');
-    } catch (e) {
-        throw new Error(e as string);
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
     }
 }
 
@@ -84,9 +127,9 @@ export const getCurrentUser = async () => {
         if(!currentUser) throw Error;
 
         return currentUser.documents[0];
-    } catch (e) {
-        console.log(e);
-        throw new Error(e as string);
+    } catch (error) {
+        console.log(error);
+        throw new Error(getErrorMessage(error));
     }
 }
 
@@ -127,8 +170,8 @@ export const getMenu = async ({ category = '', query = '', limit }: GetMenuParam
         );
 
         return menus.documents;
-    } catch (e) {
-        throw new Error(e as string);
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
     }
 }
 
@@ -140,7 +183,7 @@ export const getCategories = async () => {
         )
 
         return categories.documents;
-    } catch (e) {
-        throw new Error(e as string);
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
     }
 }

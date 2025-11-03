@@ -1,5 +1,5 @@
-import {SafeAreaView} from "react-native-safe-area-context";
-import { FlatList, Image, Pressable, Text, TouchableOpacity, View, Linking, Animated} from "react-native";
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
+import { FlatList, Image, Pressable, Text, TouchableOpacity, View, Linking, Animated, useWindowDimensions} from "react-native";
 import {Fragment, useMemo, useRef, useState, useEffect} from "react";
 import cn from 'clsx';
 import { router } from "expo-router";
@@ -18,6 +18,10 @@ export default function Index() {
     const [showLoyaltyBanner, setShowLoyaltyBanner] = useState(true);
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(24)).current;
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+    const horizontalPadding = Math.max(20, Math.min(24, width * 0.06));
+    const listBottomPadding = Math.max(32, insets.bottom + 32);
 
     useEffect(() => {
         Animated.parallel([
@@ -85,10 +89,13 @@ export default function Index() {
                       </View>
                   )
               }}
-              contentContainerClassName="pb-28 px-5"
+              contentContainerStyle={{
+                  paddingHorizontal: horizontalPadding,
+                  paddingBottom: listBottomPadding,
+              }}
               ListHeaderComponent={() => (
                   <Animated.View
-                      className="w-full my-5"
+                      className="w-full mt-5 mb-6"
                       style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
                   >
                       <View className="flex-between flex-row w-full mb-4">

@@ -1,6 +1,6 @@
 import { useCartStore } from "@/store/cart.store";
 import { CartItemType } from "@/type";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {images} from "@/constants";
 
 const CartItem = ({ item }: { item: CartItemType }) => {
@@ -30,7 +30,7 @@ const CartItem = ({ item }: { item: CartItemType }) => {
                         >
                             <Image
                                 source={images.minus}
-                                className="size-1/2"
+                                style={styles.actionIcon}
                                 resizeMode="contain"
                                 tintColor={"#E63946"}
                             />
@@ -44,7 +44,7 @@ const CartItem = ({ item }: { item: CartItemType }) => {
                         >
                             <Image
                                 source={images.plus}
-                                className="size-1/2"
+                                style={styles.actionIcon}
                                 resizeMode="contain"
                                 tintColor={"#E63946"}
                             />
@@ -57,10 +57,21 @@ const CartItem = ({ item }: { item: CartItemType }) => {
                 onPress={() => removeItem(item.id, item.customizations ?? [])}
                 className="flex-center"
             >
-                <Image source={images.trash} className="size-5" resizeMode="contain" />
+                <Image source={images.trash} style={styles.deleteIcon} resizeMode="contain" />
             </TouchableOpacity>
         </View>
     );
 };
 
 export default CartItem;
+
+const styles = StyleSheet.create({
+    actionIcon: {
+        width: 14,
+        height: 14,
+    },
+    deleteIcon: {
+        width: 22,
+        height: 22,
+    },
+});

@@ -1,7 +1,7 @@
 import {images} from "@/constants";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Image, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 const Searchbar = () => {
     const params = useLocalSearchParams<{ query: string }>();
@@ -34,7 +34,7 @@ const Searchbar = () => {
             >
                 <Image
                     source={images.search}
-                    className="size-6"
+                    style={styles.icon}
                     resizeMode="contain"
                     tintColor="#5D5F6D"
                 />
@@ -44,3 +44,10 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+const styles = StyleSheet.create({
+    icon: {
+        width: 24,
+        height: 24,
+    },
+});
