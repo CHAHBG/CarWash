@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Load .env from secrets
         shell: bash
         env:
@@ -47,15 +47,58 @@ jobs:
         run: pod install --repo-update
         working-directory: ios
 
+      - name: List available simulators
+        run: xcrun simctl list devices
+
       - name: Build for iOS Simulator
         run: |
           set -eo pipefail
+          
+          # Find an available iPhone simulator (prefer iPhone 14 Pro -> iPhone 14 -> others)
+          DESTINATION=$(python3 - <<'PY'
+          import json,subprocess,sys
+          out = subprocess.check_output(["xcrun","simctl","list","devices","--json"]).decode()
+          data = json.loads(out).get("devices", {})
+          prefs = ["iPhone 14 Pro", "iPhone 14", "iPhone 13", "iPhone 12", "iPhone 11", "iPhone SE (3rd generation)"]
+          
+          # Prefer preferred devices
+          for runtime, devs in data.items():
+            for d in devs:
+              if d.get("isAvailable") and any(p == d["name"] for p in prefs):
+                # derive an OS like 18.6 from runtime key e.g. com.apple.CoreSimulator.SimRuntime.iOS-18-6
+                if "iOS-" in runtime:
+                  os_ver = runtime.split("iOS-")[-1].replace("-", ".")
+                  print(f"platform=iOS Simulator,OS={os_ver},name={d['name']}")
+                  sys.exit(0)
+          
+          # Fallback: first available iPhone
+          for runtime, devs in data.items():
+            for d in devs:
+              if d.get("isAvailable") and "iPhone" in d["name"]:
+                if "iOS-" in runtime:
+                  os_ver = runtime.split("iOS-")[-1].replace("-", ".")
+                  print(f"platform=iOS Simulator,OS={os_ver},name={d['name']}")
+                  sys.exit(0)
+          
+          # Nothing found
+          print("", end="")
+          PY
+          )
+          
+          if [ -z "$DESTINATION" ]; then
+            echo "No available iPhone simulator found. Listing simulators for debugging:"
+            xcrun simctl list devices
+            exit 1
+          fi
+          
+          echo "Using simulator destination: $DESTINATION"
+          
           xcodebuild \
             -workspace CarWashRestaurant.xcworkspace \
             -scheme CarWashRestaurant \
             -sdk iphonesimulator \
             -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 14' \
+            -destination "$DESTINATION" \
             -derivedDataPath "$GITHUB_WORKSPACE/ios/build" \
             build
         working-directory: ios
