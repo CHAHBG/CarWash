@@ -117,6 +117,18 @@ export default function TabLayout() {
                     tabBarIcon: ({ focused }) => <TabBarIcon icon={images.person} focused={focused} />
                 }}
             />
+            <Tabs.Screen
+                name='edit-profile'
+                options={{
+                    href: null, // Cache l'onglet de la navigation mais accessible depuis le profil
+                }}
+            />
+            <Tabs.Screen
+                name='change-password'
+                options={{
+                    href: null, // Cache l'onglet de la navigation mais accessible depuis le profil
+                }}
+            />
         </Tabs>
     );
 }
@@ -131,8 +143,8 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     iconImage: {
-        width: 24,
-        height: 24,
+        width: 28,
+        height: 28,
     },
     tabIconActive: {
         backgroundColor: 'rgba(230, 57, 70, 0.12)',
