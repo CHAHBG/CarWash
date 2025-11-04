@@ -1,6 +1,7 @@
 import {SplashScreen, Stack} from "expo-router";
 import { useFonts } from 'expo-font';
 import { useEffect} from "react";
+import { Platform } from 'react-native';
 
 import './globals.css';
 import * as Sentry from '@sentry/react-native';
@@ -24,7 +25,7 @@ Sentry.init({
 });
 
 export default Sentry.wrap(function RootLayout() {
-  const { isLoading, fetchAuthenticatedUser } = useAuthStore();
+  const { fetchAuthenticatedUser } = useAuthStore();
 
   const [fontsLoaded, error] = useFonts({
     "QuickSand-Bold": require('../assets/fonts/Quicksand-Bold.ttf'),
@@ -47,7 +48,9 @@ export default Sentry.wrap(function RootLayout() {
   }, [fetchAuthenticatedUser]);
 
   useEffect(() => {
-    Sentry.showFeedbackWidget();
+    if (Platform.OS === 'web') {
+      Sentry.showFeedbackWidget();
+    }
   }, []);
 
   // Ne pas bloquer le rendu si isLoading - permettre la navigation en mode invité

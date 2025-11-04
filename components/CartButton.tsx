@@ -1,16 +1,20 @@
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native'
-import React from 'react'
-import {images} from "@/constants";
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import React, { useCallback } from 'react'
 import {useCartStore} from "@/store/cart.store";
 import {router} from "expo-router";
+import * as Haptics from 'expo-haptics';
 
 const CartButton = () => {
-    const { getTotalItems } = useCartStore();
-    const totalItems = getTotalItems();
+    const totalItems = useCartStore((state) => state.getTotalItems());
+
+    const handlePress = useCallback(() => {
+        void Haptics.selectionAsync();
+        router.push('/cart');
+    }, []);
 
     return (
-        <TouchableOpacity className="cart-btn" onPress={()=> router.push('/cart')}>
-            <Image source={images.bag} style={styles.icon} resizeMode="contain" />
+        <TouchableOpacity className="cart-btn" onPress={handlePress} activeOpacity={0.9}>
+            <Text style={styles.emojiIcon}>🛒</Text>
 
             {totalItems > 0 && (
                 <View className="cart-badge">
@@ -23,8 +27,8 @@ const CartButton = () => {
 export default CartButton
 
 const styles = StyleSheet.create({
-    icon: {
-        width: 22,
-        height: 22,
+    emojiIcon: {
+        fontSize: 20,
+        color: '#FFFFFF',
     },
 });

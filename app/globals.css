@@ -18,15 +18,15 @@
 
 @layer components {
     .cart-btn {
-        @apply flex items-center justify-center size-10 rounded-full bg-dark-100;
+        @apply relative flex items-center justify-center size-11 rounded-full bg-[#12131F] shadow-md shadow-black/40;
     }
 
     .cart-badge {
-        @apply absolute -top-2 -right-1 flex items-center justify-center size-5 bg-primary rounded-full;
+        @apply absolute -top-1.5 -right-1.5 flex items-center justify-center size-5 bg-primary rounded-full border border-white;
     }
 
     .cart-item {
-        @apply flex flex-row items-end justify-between mb-4 bg-white rounded-2xl p-4 shadow-sm shadow-black/10 border border-gray-100;
+        @apply flex flex-row items-end justify-between mb-4 bg-white rounded-3xl p-4 shadow-sm shadow-black/10 border border-gray-100/70;
     }
 
     .cart-item__image {

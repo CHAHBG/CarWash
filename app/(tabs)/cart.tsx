@@ -1,11 +1,12 @@
 import {View, Text, FlatList, TouchableOpacity, Alert, Image, Linking, useWindowDimensions} from 'react-native'
 import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
+import {useMemo, useState} from "react";
+import cn from "clsx";
+
 import {useCartStore} from "@/store/cart.store";
 import CustomHeader from "@/components/CustomHeader";
-import cn from "clsx";
 import CustomButton from "@/components/CustomButton";
 import CartItem from "@/components/CartItem";
-import {useMemo, useState} from "react";
 import useAuthStore from "@/store/auth.store";
 import CustomInput from "@/components/CustomInput";
 import { generateGuestId, validateGuestInfo } from "@/lib/guestUtils";
@@ -34,8 +35,13 @@ const PaymentInfoStripe = ({ label,  value,  labelStyle,  valueStyle, }: Payment
     </View>
 );
 
+const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(Math.round(value));
+
 const Cart = () => {
-    const { items, getTotalItems, getTotalPrice, guestInfo, setGuestInfo } = useCartStore();
+    const items = useCartStore((state) => state.items);
+    const guestInfo = useCartStore((state) => state.guestInfo);
+    const setGuestInfo = useCartStore((state) => state.setGuestInfo);
     const { user, isAuthenticated } = useAuthStore();
     const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('cash');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -48,10 +54,25 @@ const Cart = () => {
     const [guestPhone, setGuestPhone] = useState(guestInfo?.phone || '');
     const [guestAddress, setGuestAddress] = useState(guestInfo?.address || '');
 
-    const totalItems = getTotalItems();
-    const totalPrice = getTotalPrice();
+    const totalItems = useMemo(
+        () => items.reduce((total, item) => total + item.quantity, 0),
+        [items]
+    );
+
+    const subtotal = useMemo(
+        () =>
+            items.reduce((total, item) => {
+                const customTotal = item.customizations?.reduce((sum, customization) => sum + customization.price, 0) ?? 0;
+                return total + item.quantity * (item.price + customTotal);
+            }, 0),
+        [items]
+    );
+
     const discount = 0;
-    const finalTotal = totalPrice + DELIVERY_FEE - discount;
+    const finalTotal = useMemo(
+        () => subtotal + DELIVERY_FEE - discount,
+        [subtotal, discount]
+    );
 
     const paymentMethods = useMemo(() => ([
         {
@@ -84,7 +105,7 @@ const Cart = () => {
         const externalId = `order-${Date.now()}`;
         const metadata = {
             totalItems,
-            totalPrice,
+            totalPrice: subtotal,
             deliveryFee: DELIVERY_FEE,
             customerType: isAuthenticated ? 'registered' : 'guest',
         };
@@ -167,7 +188,7 @@ const Cart = () => {
 
             Alert.alert(
                 'Commande confirmée',
-                `${referenceText}${paymentResult.status === 'success' && paymentResult.message ? `${paymentResult.message}\n\n` : ''}Votre commande de ${finalTotal} ${CURRENCY} est en cours de préparation. Nous vous contacterons très vite !`,
+                `${referenceText}${paymentResult.status === 'success' && paymentResult.message ? `${paymentResult.message}\n\n` : ''}Votre commande de ${formatCurrency(finalTotal)} ${CURRENCY} est en cours de préparation. Nous vous contacterons très vite !`,
                 [{ text: 'Super !' }]
             );
         } catch (error: any) {
@@ -176,6 +197,140 @@ const Cart = () => {
             setIsProcessing(false);
         }
     };
+
+    const renderFooter = () => (
+        <View className="gap-5">
+            {/* Formulaire invité si non connecté */}
+            {!isAuthenticated && (
+                <View className="mt-6 border border-gray-200 p-5 rounded-2xl bg-white">
+                    <Text className="h3-bold text-dark-100 mb-4">
+                        Informations de Livraison
+                    </Text>
+                    <View className="gap-4">
+                        <CustomInput
+                            label="Nom complet"
+                            placeholder="Votre nom"
+                            value={guestName}
+                            onChangeText={setGuestName}
+                        />
+                        <CustomInput
+                            label="Téléphone"
+                            placeholder="77 123 45 67"
+                            value={guestPhone}
+                            onChangeText={setGuestPhone}
+                            keyboardType="phone-pad"
+                        />
+                        <CustomInput
+                            label="Adresse de livraison"
+                            placeholder="Quartier, rue, indication..."
+                            value={guestAddress}
+                            onChangeText={setGuestAddress}
+                        />
+                    </View>
+                </View>
+            )}
+
+            {/* Bannière fidélisation pour invités */}
+            {!isAuthenticated && (
+                <View className="bg-yellow-50 border border-yellow-200 p-4 rounded-2xl flex-row items-center">
+                    <Text className="text-2xl mr-3">🎁</Text>
+                    <View className="flex-1">
+                        <Text className="font-semibold text-dark-100">
+                            Connectez-vous pour cumuler des points!
+                        </Text>
+                        <Text className="text-sm text-gray-600 mt-1">
+                            Gagnez des réductions sur vos prochaines commandes
+                        </Text>
+                    </View>
+                </View>
+            )}
+
+            {/* Méthodes de paiement */}
+            <View className="mt-6 border border-gray-200 p-5 rounded-2xl bg-white">
+                <Text className="h3-bold text-dark-100 mb-4">
+                    Mode de Paiement
+                </Text>
+                <View className="gap-3">
+                    {paymentMethods.map((method) => (
+                        <TouchableOpacity
+                            key={method.id}
+                            onPress={() => setSelectedPayment(method.id)}
+                            className={cn(
+                                "flex-row items-center p-3 rounded-lg border-2",
+                                selectedPayment === method.id
+                                    ? "border-primary bg-red-50"
+                                    : "border-gray-200 bg-white"
+                            )}
+                            style={selectedPayment === method.id ? {borderColor: '#E63946'} : {}}
+                        >
+                            {method.logo ? (
+                                <Image source={{ uri: method.logo }} className="w-10 h-10 mr-3" resizeMode="contain" />
+                            ) : (
+                                <Text className="text-2xl mr-3">{method.icon}</Text>
+                            )}
+                            <View className="flex-1">
+                                <Text
+                                    className={cn(
+                                        "text-base font-semibold",
+                                        selectedPayment === method.id ? "text-primary" : "text-dark-100"
+                                    )}
+                                    style={selectedPayment === method.id ? { color: '#E63946' } : {}}
+                                >
+                                    {method.name}
+                                </Text>
+                                {method.description && (
+                                    <Text className="text-xs text-gray-500 mt-1">
+                                        {method.description}
+                                    </Text>
+                                )}
+                            </View>
+                            {selectedPayment === method.id && (
+                                <View className="w-6 h-6 rounded-full items-center justify-center" style={{backgroundColor: '#E63946'}}>
+                                    <Text className="text-white text-xs">✓</Text>
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {/* Résumé de paiement */}
+            <View className="border border-gray-200 p-5 rounded-2xl bg-white">
+                <Text className="h3-bold text-dark-100 mb-5">
+                    Résumé de la Commande
+                </Text>
+
+                <PaymentInfoStripe
+                    label={`Total Articles (${totalItems})`}
+                    value={`${formatCurrency(subtotal)} ${CURRENCY}`}
+                />
+                <PaymentInfoStripe
+                    label={`Frais de Livraison`}
+                    value={`${formatCurrency(DELIVERY_FEE)} ${CURRENCY}`}
+                />
+                {discount > 0 && (
+                    <PaymentInfoStripe
+                        label={`Réduction`}
+                        value={`- ${formatCurrency(discount)} ${CURRENCY}`}
+                        valueStyle="!text-success"
+                    />
+                )}
+                <View className="border-t border-gray-300 my-2" />
+                <PaymentInfoStripe
+                    label={`Total à Payer`}
+                    value={`${formatCurrency(finalTotal)} ${CURRENCY}`}
+                    labelStyle="base-bold !text-dark-100"
+                    valueStyle="base-bold !text-dark-100 !text-right"
+                />
+            </View>
+
+            <CustomButton 
+                title={isAuthenticated ? "Commander maintenant" : "Payer sans compte"}
+                onPress={handleOrder}
+                isLoading={isProcessing}
+            />
+        </View>
+    );
 
     return (
         <SafeAreaView className="bg-white h-full">
@@ -188,145 +343,35 @@ const Cart = () => {
                     paddingHorizontal: horizontalPadding,
                     paddingTop: 20,
                 }}
-                ListHeaderComponent={() => <CustomHeader title="Votre Panier" />}
+                ListHeaderComponent={() => (
+                    <View className="mb-6">
+                        <CustomHeader title="Votre Panier" />
+                        <View className="mt-4 border border-gray-200 bg-white rounded-3xl px-5 py-4">
+                            <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                                Aperçu rapide
+                            </Text>
+                            <View className="flex-row justify-between items-end mt-3">
+                                <View>
+                                    <Text className="text-2xl font-quicksand-bold text-dark-100">
+                                        {formatCurrency(finalTotal)} {CURRENCY}
+                                    </Text>
+                                    <Text className="text-xs text-gray-500 mt-1">
+                                        {totalItems} article{totalItems > 1 ? 's' : ''} au panier
+                                    </Text>
+                                </View>
+                                <Text className="text-xs text-gray-400">
+                                    Livraison {formatCurrency(DELIVERY_FEE)} {CURRENCY}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                )}
                 ListEmptyComponent={() => (
                     <Text className="text-center text-gray-500 mt-10">
                         Votre panier est vide
                     </Text>
                 )}
-                ListFooterComponent={() => totalItems > 0 && (
-                    <View className="gap-5">
-                        {/* Formulaire invité si non connecté */}
-                        {!isAuthenticated && (
-                            <View className="mt-6 border border-gray-200 p-5 rounded-2xl">
-                                <Text className="h3-bold text-dark-100 mb-4">
-                                    Informations de Livraison
-                                </Text>
-                                <View className="gap-4">
-                                    <CustomInput
-                                        label="Nom complet"
-                                        placeholder="Votre nom"
-                                        value={guestName}
-                                        onChangeText={setGuestName}
-                                    />
-                                    <CustomInput
-                                        label="Téléphone"
-                                        placeholder="77 123 45 67"
-                                        value={guestPhone}
-                                        onChangeText={setGuestPhone}
-                                        keyboardType="phone-pad"
-                                    />
-                                    <CustomInput
-                                        label="Adresse de livraison"
-                                        placeholder="Quartier, rue, indication..."
-                                        value={guestAddress}
-                                        onChangeText={setGuestAddress}
-                                    />
-                                </View>
-                            </View>
-                        )}
-
-                        {/* Bannière fidélisation pour invités */}
-                        {!isAuthenticated && (
-                            <View className="bg-yellow-50 border border-yellow-200 p-4 rounded-2xl flex-row items-center">
-                                <Text className="text-2xl mr-3">🎁</Text>
-                                <View className="flex-1">
-                                    <Text className="font-semibold text-dark-100">
-                                        Connectez-vous pour cumuler des points!
-                                    </Text>
-                                    <Text className="text-sm text-gray-600 mt-1">
-                                        Gagnez des réductions sur vos prochaines commandes
-                                    </Text>
-                                </View>
-                            </View>
-                        )}
-
-                        {/* Méthodes de paiement */}
-                        <View className="mt-6 border border-gray-200 p-5 rounded-2xl">
-                            <Text className="h3-bold text-dark-100 mb-4">
-                                Mode de Paiement
-                            </Text>
-                            <View className="gap-3">
-                                {paymentMethods.map((method) => (
-                                    <TouchableOpacity
-                                        key={method.id}
-                                        onPress={() => setSelectedPayment(method.id)}
-                                        className={cn(
-                                            "flex-row items-center p-3 rounded-lg border-2",
-                                            selectedPayment === method.id
-                                                ? "border-primary bg-red-50"
-                                                : "border-gray-200 bg-white"
-                                        )}
-                                        style={selectedPayment === method.id ? {borderColor: '#E63946'} : {}}
-                                    >
-                                        {method.logo ? (
-                                            <Image source={{ uri: method.logo }} className="w-10 h-10 mr-3" resizeMode="contain" />
-                                        ) : (
-                                            <Text className="text-2xl mr-3">{method.icon}</Text>
-                                        )}
-                                        <View className="flex-1">
-                                            <Text
-                                                className={cn(
-                                                    "text-base font-semibold",
-                                                    selectedPayment === method.id ? "text-primary" : "text-dark-100"
-                                                )}
-                                                style={selectedPayment === method.id ? { color: '#E63946' } : {}}
-                                            >
-                                                {method.name}
-                                            </Text>
-                                            {method.description && (
-                                                <Text className="text-xs text-gray-500 mt-1">
-                                                    {method.description}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        {selectedPayment === method.id && (
-                                            <View className="w-6 h-6 rounded-full items-center justify-center" style={{backgroundColor: '#E63946'}}>
-                                                <Text className="text-white text-xs">✓</Text>
-                                            </View>
-                                        )}
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        </View>
-
-                        {/* Résumé de paiement */}
-                        <View className="border border-gray-200 p-5 rounded-2xl">
-                            <Text className="h3-bold text-dark-100 mb-5">
-                                Résumé de la Commande
-                            </Text>
-
-                            <PaymentInfoStripe
-                                label={`Total Articles (${totalItems})`}
-                                value={`${totalPrice} ${CURRENCY}`}
-                            />
-                            <PaymentInfoStripe
-                                label={`Frais de Livraison`}
-                                value={`${DELIVERY_FEE} ${CURRENCY}`}
-                            />
-                            {discount > 0 && (
-                                <PaymentInfoStripe
-                                    label={`Réduction`}
-                                    value={`- ${discount} ${CURRENCY}`}
-                                    valueStyle="!text-success"
-                                />
-                            )}
-                            <View className="border-t border-gray-300 my-2" />
-                            <PaymentInfoStripe
-                                label={`Total à Payer`}
-                                value={`${finalTotal} ${CURRENCY}`}
-                                labelStyle="base-bold !text-dark-100"
-                                valueStyle="base-bold !text-dark-100 !text-right"
-                            />
-                        </View>
-
-                        <CustomButton 
-                            title={isAuthenticated ? "Commander maintenant" : "Payer sans compte"}
-                            onPress={handleOrder}
-                            isLoading={isProcessing}
-                        />
-                    </View>
-                )}
+                ListFooterComponent={() => totalItems > 0 ? renderFooter() : null}
             />
         </SafeAreaView>
     )

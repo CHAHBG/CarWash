@@ -91,14 +91,14 @@ export const offers = [
     },
     {
         id: 3,
-        title: "Boissons et rafraîchissements",
+        title: "Boissons & Rafraîchissements",
         image: drinks,
         color: "#1D3557",
         category: "boissons", // Logique spéciale dans menu.tsx (jus + café)
     },
     {
         id: 4,
-        title: "Plateau familiale",
+        title: "Plateau familial",
         image: burgerTwo, // Changé de buritto à burgerTwo
         color: "#F77F00",
         category: "specialites", // Spécialités

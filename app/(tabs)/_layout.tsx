@@ -1,24 +1,25 @@
-import {Tabs} from "expo-router";
-import {TabBarIconProps} from "@/type";
-import {Image, StyleSheet, Text, View, useWindowDimensions} from "react-native";
-import {images} from "@/constants";
-import cn from "clsx";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {useMemo} from "react";
+import { Tabs } from 'expo-router';
+import { Image, Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useMemo } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
+
+import { images } from '@/constants';
+import { TabBarIconProps } from '@/type';
 
 const TabBarIcon = ({ focused, icon, title }: TabBarIconProps) => (
-    <View style={styles.tabIcon}>
+    <View style={[styles.tabIcon, focused && styles.tabIconActive]}>
         <Image
             source={icon}
             style={styles.iconImage}
             resizeMode="contain"
-            tintColor={focused ? '#FE8C00' : '#5D5F6D'}
+            tintColor={focused ? '#E63946' : '#7C7F8C'}
         />
-        <Text className={cn('text-xs font-bold', focused ? 'text-primary' : 'text-gray-200')}>
+        <Text style={[styles.tabLabel, focused ? styles.tabLabelActive : styles.tabLabelInactive]}>
             {title}
         </Text>
     </View>
-)
+);
 
 export default function TabLayout() {
     const insets = useSafeAreaInsets();
@@ -27,40 +28,55 @@ export default function TabLayout() {
     const isCompactWidth = width < 360;
     const horizontalMargin = isCompactWidth ? 16 : Math.min(24, width * 0.08);
     const baseHeight = isCompactWidth ? 56 : 64;
-    const bottomSpacing = Math.max(insets.bottom, 10);
+    const safeBottom = insets.bottom;
+    const paddingBottom = safeBottom > 0 ? Math.max(18, safeBottom * 0.75) : 18;
+    const floatingOffset = safeBottom > 0 ? Math.max(10, safeBottom * 0.55) : 12;
 
     const tabBarStyle = useMemo(() => ({
-        borderTopLeftRadius: 32,
-        borderTopRightRadius: 32,
-        borderBottomLeftRadius: 32,
-        borderBottomRightRadius: 32,
+        borderRadius: 40,
         marginHorizontal: horizontalMargin,
-        paddingHorizontal: isCompactWidth ? 16 : 24,
-        paddingTop: 8,
-        paddingBottom: bottomSpacing,
-        height: baseHeight + bottomSpacing,
+        paddingHorizontal: isCompactWidth ? 18 : 28,
+        paddingVertical: 6,
+        height: baseHeight + paddingBottom,
         position: 'absolute' as const,
-        bottom: bottomSpacing / 2,
-        backgroundColor: 'white',
-        shadowColor: '#1a1a1a',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.12,
-        shadowRadius: 6,
-        elevation: 6,
-    }), [horizontalMargin, isCompactWidth, bottomSpacing, baseHeight]);
+        bottom: floatingOffset,
+        backgroundColor: 'transparent',
+        borderWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
+        borderColor: 'rgba(231, 234, 242, 0.45)',
+        overflow: 'hidden' as const,
+        shadowColor: '#0F172A',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: Platform.OS === 'ios' ? 0.18 : 0.12,
+        shadowRadius: 24,
+        elevation: Platform.OS === 'ios' ? 0 : 8,
+        zIndex: 30,
+    }), [horizontalMargin, isCompactWidth, paddingBottom, baseHeight, floatingOffset]);
 
     // Ne pas rediriger automatiquement - permettre l'accès en mode invité
     // if(!isAuthenticated) return <Redirect href="/sign-in" />
 
     return (
-        <Tabs screenOptions={{
+        <Tabs
+            screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarStyle,
+                tabBarAllowFontScaling: false,
+                tabBarHideOnKeyboard: true,
                 tabBarItemStyle: {
                     paddingVertical: isCompactWidth ? 6 : 10,
                 },
-            }}>
+                tabBarInactiveTintColor: '#7C7F8C',
+                tabBarActiveTintColor: '#E63946',
+                tabBarBackground: () => (
+                    <BlurView
+                        tint="light"
+                        intensity={65}
+                        style={[StyleSheet.absoluteFill, styles.tabBackground]}
+                    />
+                ),
+            }}
+        >
             <Tabs.Screen
                 name='index'
                 options={{
@@ -111,10 +127,32 @@ const styles = StyleSheet.create({
     tabIcon: {
         alignItems: 'center',
         justifyContent: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        borderRadius: 999,
         gap: 4,
     },
     iconImage: {
         width: 24,
         height: 24,
+    },
+    tabIconActive: {
+        backgroundColor: 'rgba(230, 57, 70, 0.12)',
+    },
+    tabLabel: {
+        fontSize: 12,
+        marginTop: 4,
+        fontWeight: '500',
+    },
+    tabLabelActive: {
+        color: '#E63946',
+        fontWeight: '600',
+    },
+    tabLabelInactive: {
+        color: '#7C7F8C',
+    },
+    tabBackground: {
+        borderRadius: 40,
+        overflow: 'hidden',
     },
 });
