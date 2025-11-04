@@ -1,9 +1,10 @@
 import {Client, Account, Databases, Storage, ID, Query, Permission, Role, AppwriteException} from "react-native-appwrite";
 import {CreateUserPrams, GetMenuParams, SignInParams} from "@/type";
 
+// Defensive Appwrite initialization - if env vars are missing we set safe defaults
 export const appwriteConfig = {
-    endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
-    projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!,
+    endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || 'http://localhost/v1',
+    projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || '',
     platform: "com.carwash.restaurant",
     databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID || '69063306000938349d80',
     bucketId: process.env.EXPO_PUBLIC_APPWRITE_BUCKET_ID || '68643e170015edaa95d7',
@@ -17,10 +18,21 @@ export const appwriteConfig = {
 
 export const client = new Client();
 
-client
-    .setEndpoint(appwriteConfig.endpoint)
-    .setProject(appwriteConfig.projectId)
-    .setPlatform(appwriteConfig.platform)
+// If projectId is missing, we mark Appwrite as unavailable and continue with a harmless local endpoint.
+export const appwriteAvailable = Boolean(process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT && process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID);
+
+try {
+    client
+        .setEndpoint(appwriteConfig.endpoint)
+        .setPlatform(appwriteConfig.platform);
+
+    if (appwriteConfig.projectId) {
+        client.setProject(appwriteConfig.projectId);
+    }
+} catch (err) {
+    // Defensive: log and continue; downstream callers should handle unavailability via thrown errors
+    console.warn('Appwrite client initialization issue:', err);
+}
 
 export const account = new Account(client);
 export const databases = new Databases(client);
