@@ -1,8 +1,8 @@
-import {View, Text, Alert, TouchableOpacity, Animated, Image} from 'react-native'
+import {View, Text, Alert, TouchableOpacity, Image} from 'react-native'
 import {Link, router} from "expo-router";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect} from "react";
 import {signIn} from "@/lib/appwrite";
 import * as Sentry from '@sentry/react-native'
 import { isBiometricAvailable, authenticateWithBiometric } from '@/lib/authServices';
@@ -14,27 +14,11 @@ const SignIn = () => {
     const [form, setForm] = useState({ email: '', password: '' });
     const [biometricAvailable, setBiometricAvailable] = useState(false);
     const [biometricType, setBiometricType] = useState<string>('');
-    const fadeIn = useRef(new Animated.Value(0)).current;
-    const slideUp = useRef(new Animated.Value(40)).current;
     const fetchAuthenticatedUser = useAuthStore((state) => state.fetchAuthenticatedUser);
 
     useEffect(() => {
         checkBiometric();
-        Animated.parallel([
-            Animated.timing(fadeIn, {
-                toValue: 1,
-                duration: 450,
-                useNativeDriver: true,
-            }),
-            Animated.spring(slideUp, {
-                toValue: 0,
-                damping: 12,
-                mass: 1,
-                stiffness: 110,
-                useNativeDriver: true,
-            }),
-        ]).start();
-    }, [fadeIn, slideUp]);
+    }, []);
 
     const checkBiometric = async () => {
         const result = await isBiometricAvailable();
@@ -77,13 +61,7 @@ const SignIn = () => {
     };
 
     return (
-        <Animated.View
-            style={{
-                opacity: fadeIn,
-                transform: [{ translateY: slideUp }],
-            }}
-            className="px-6 pt-6 pb-12"
-        >
+        <View className="px-6 pt-6 pb-12">
             <View className="rounded-3xl overflow-hidden mb-7" style={{backgroundColor: '#FDF2F4'}}>
                 <View className="flex-row items-center px-5 py-6">
                     <View className="flex-1">
@@ -160,7 +138,7 @@ const SignIn = () => {
                     Inscrivez-vous
                 </Link>
             </View>
-        </Animated.View>
+        </View>
     )
 }
 

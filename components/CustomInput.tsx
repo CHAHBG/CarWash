@@ -1,6 +1,6 @@
 import {View, Text, TextInput} from 'react-native'
 import {CustomInputProps} from "@/type";
-import {useState} from "react";
+import {useState, useCallback} from "react";
 import cn from "clsx";
 
 const CustomInput = ({
@@ -13,6 +13,8 @@ const CustomInput = ({
 }: CustomInputProps) => {
     const [isFocused, setIsFocused] = useState(false);
 
+    const handleFocus = useCallback(() => setIsFocused(true), []);
+    const handleBlur = useCallback(() => setIsFocused(false), []);
 
     return (
         <View className="w-full">
@@ -25,11 +27,13 @@ const CustomInput = ({
                 onChangeText={onChangeText}
                 secureTextEntry={secureTextEntry}
                 keyboardType={keyboardType}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 placeholder={placeholder}
                 placeholderTextColor="#9DA3AF"
-                className={cn('input', isFocused ? 'border-primary shadow-md shadow-primary/20 bg-white' : 'border-gray-200')}
+                returnKeyType="next"
+                blurOnSubmit={false}
+                className={cn('input', isFocused ? 'border-primary shadow-md shadow-primary/20 bg-white' : 'border-gray-300')}
             />
         </View>
     )

@@ -199,3 +199,54 @@ export const getCategories = async () => {
         throw new Error(getErrorMessage(error));
     }
 }
+
+export const updateUserProfile = async (userId: string, data: {
+    name?: string;
+    phone?: string;
+    defaultAddress?: string;
+    avatar?: string | null;
+    loyaltyPoints?: number;
+}) => {
+    try {
+        // Update account name if provided
+        if (data.name) {
+            await account.updateName(data.name);
+        }
+
+        // Update user document in database with other fields
+        const updateData: any = {};
+        if (data.phone !== undefined) updateData.phone = data.phone;
+        if (data.defaultAddress !== undefined) updateData.defaultAddress = data.defaultAddress;
+        if (data.avatar !== undefined) updateData.avatar = data.avatar;
+        if (data.loyaltyPoints !== undefined) updateData.loyaltyPoints = data.loyaltyPoints;
+
+        // Find user document by accountId
+        const userDocs = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            [Query.equal('accountId', userId)]
+        );
+
+        if (userDocs.documents.length > 0) {
+            await databases.updateDocument(
+                appwriteConfig.databaseId,
+                appwriteConfig.userCollectionId,
+                userDocs.documents[0].$id,
+                updateData
+            );
+        }
+
+        return { success: true };
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
+    }
+}
+
+export const updatePassword = async (oldPassword: string, newPassword: string) => {
+    try {
+        await account.updatePassword(newPassword, oldPassword);
+        return { success: true };
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
+    }
+}

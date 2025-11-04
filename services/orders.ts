@@ -6,7 +6,7 @@
 import { databases, appwriteConfig } from '@/lib/appwrite';
 import { ID } from 'react-native-appwrite';
 import { OrderData, CartItemType, GuestUser, User } from '@/type';
-import { generateGuestId } from '@/lib/guestUtils';
+
 
 /**
  * Créer une commande (authentifié ou invité)

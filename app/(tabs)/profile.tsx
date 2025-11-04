@@ -131,25 +131,45 @@ const Profile = () => {
     return (
         <SafeAreaView className="bg-white h-full">
             <ScrollView className="px-5 pt-5" contentContainerStyle={{ paddingBottom: bottomSpacing }}>
+                {/* Welcome Message */}
+                <View className="bg-gradient-to-r p-5 rounded-2xl mb-6" style={{backgroundColor: '#F1FAEE'}}>
+                    <Text className="text-lg font-quicksand-semibold" style={{color: '#E63946'}}>
+                        👋 Ravi de vous revoir,
+                    </Text>
+                    <Text className="text-2xl font-quicksand-bold text-gray-900 mt-1">
+                        {user?.name || 'Utilisateur'}
+                    </Text>
+                </View>
+
                 {/* En-tête du profil */}
-                <View className="items-center mb-6 mt-4">
-                    <View 
-                        className="rounded-full items-center justify-center mb-3"
-                        style={[styles.profileAvatar, {backgroundColor: '#F1FAEE'}]}
+                <View className="items-center mb-6">
+                    <TouchableOpacity
+                        onPress={() => router.push('/edit-profile' as any)}
+                        activeOpacity={0.8}
                     >
-                        {user?.avatar ? (
-                            <Image 
-                                source={{ uri: user.avatar }} 
-                                style={styles.profileAvatar}
-                            />
-                        ) : (
-                            <Text className="text-4xl font-bold" style={{color: '#E63946'}}>
-                                {user?.name?.charAt(0).toUpperCase() || 'U'}
-                            </Text>
-                        )}
-                    </View>
-                    <Text className="h2-bold text-dark-100">{user?.name || 'Utilisateur'}</Text>
-                    <Text className="paragraph-regular text-gray-500">{user?.email}</Text>
+                        <View 
+                            className="rounded-full items-center justify-center mb-3"
+                            style={[styles.profileAvatar, {backgroundColor: '#F1FAEE'}]}
+                        >
+                            {user?.avatar ? (
+                                <Image 
+                                    source={{ uri: user.avatar }} 
+                                    style={styles.profileAvatar}
+                                />
+                            ) : (
+                                <Text className="text-4xl font-bold" style={{color: '#E63946'}}>
+                                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                                </Text>
+                            )}
+                        </View>
+                        <View className="absolute bottom-2 right-0 w-8 h-8 rounded-full items-center justify-center" style={{backgroundColor: '#E63946'}}>
+                            <Text className="text-white text-xs">✏️</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <Text className="paragraph-regular text-gray-500 mt-2">{user?.email}</Text>
+                    {user?.phone && (
+                        <Text className="text-sm text-gray-500">📱 {user.phone}</Text>
+                    )}
                 </View>
 
                 {/* Options du profil */}
@@ -158,11 +178,22 @@ const Profile = () => {
                     
                     <TouchableOpacity 
                         className="flex-row items-center justify-between py-4 px-4 bg-gray-50 rounded-xl mb-2"
-                        onPress={() => Alert.alert('En développement', 'Cette fonctionnalité sera bientôt disponible')}
+                        onPress={() => router.push('/edit-profile' as any)}
                     >
                         <View className="flex-row items-center">
                             <Image source={images.person} style={styles.primaryIcon} className="mr-3" resizeMode="contain" />
                             <Text className="paragraph-semibold text-dark-100">Modifier mon profil</Text>
+                        </View>
+                        <Image source={images.arrowRight} style={styles.chevron} resizeMode="contain" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        className="flex-row items-center justify-between py-4 px-4 bg-gray-50 rounded-xl mb-2"
+                        onPress={() => router.push('/change-password' as any)}
+                    >
+                        <View className="flex-row items-center">
+                            <Text className="text-lg mr-3">🔒</Text>
+                            <Text className="paragraph-semibold text-dark-100">Changer le mot de passe</Text>
                         </View>
                         <Image source={images.arrowRight} style={styles.chevron} resizeMode="contain" />
                     </TouchableOpacity>
@@ -179,17 +210,6 @@ const Profile = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        className="flex-row items-center justify-between py-4 px-4 bg-gray-50 rounded-xl mb-2"
-                        onPress={() => Alert.alert('En développement', 'Cette fonctionnalité sera bientôt disponible')}
-                    >
-                        <View className="flex-row items-center">
-                            <Image source={images.location} style={styles.primaryIcon} className="mr-3" resizeMode="contain" />
-                            <Text className="paragraph-semibold text-dark-100">Mes adresses</Text>
-                        </View>
-                        <Image source={images.arrowRight} style={styles.chevron} resizeMode="contain" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
                         className="flex-row items-center justify-between py-4 px-4 bg-gray-50 rounded-xl"
                         onPress={() => Alert.alert('En développement', 'Cette fonctionnalité sera bientôt disponible')}
                     >
@@ -198,7 +218,9 @@ const Profile = () => {
                             <Text className="paragraph-semibold text-dark-100">Points de fidélité</Text>
                         </View>
                         <View className="flex-row items-center">
-                            <Text className="font-bold mr-2" style={{color: '#E63946'}}>0 pts</Text>
+                            <Text className="font-bold mr-2" style={{color: '#E63946'}}>
+                                {user?.loyaltyPoints || 0} pts
+                            </Text>
                             <Image source={images.arrowRight} style={styles.chevron} resizeMode="contain" />
                         </View>
                     </TouchableOpacity>

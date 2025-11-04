@@ -1,0 +1,5 @@
+[x] Align typography and update color tokens in tailwind config
+[x] Rework home hero and stats section for Tamba content
+[x] Enhance loyalty banner to highlight points
+[x] Standardize input and button styling across auth forms
+[ ] Run ESLint to verify no new issues

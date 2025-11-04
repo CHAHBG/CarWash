@@ -3,7 +3,7 @@
  * Support pour Orange Money, Wave et Stripe
  */
 
-import { Alert } from 'react-native';
+
 
 export type PaymentMethod = 'cash' | 'orange' | 'wave' | 'card';
 

@@ -1,5 +1,6 @@
-import { CartCustomization, CartStore, GuestUser } from "@/type";
+import { CartCustomization, CartStore } from "@/type";
 import { create } from "zustand";
+import { KitchenOrder, KitchenOrderItem } from "@/types/kitchen.types";
 
 function areCustomizationsEqual(
     a: CartCustomization[] = [],
@@ -95,4 +96,45 @@ export const useCartStore = create<CartStore>((set, get) => ({
                 ) ?? 0;
             return total + item.quantity * (base + customPrice);
         }, 0),
+
+    createKitchenOrder: (customerInfo: { name: string; phone?: string; address?: string; type: 'dine-in' | 'takeaway' | 'delivery'; notes?: string }): KitchenOrder => {
+        const cartItems = get().items;
+        const orderNumber = `CW${Date.now().toString().slice(-6)}`;
+        
+        const kitchenItems: KitchenOrderItem[] = cartItems.map(item => ({
+            id: `${item.id}_${Date.now()}`,
+            menuItemId: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            customizations: (item.customizations || []).map(c => ({
+                categoryName: c.category || 'Option',
+                optionName: c.name || 'Personnalisation',
+                optionIcon: c.icon || '🔸',
+                quantity: 1,
+            })),
+            preparationTime: 15, // Default preparation time
+            spiceLevel: 'medium', // Default spice level
+        }));
+
+        const totalPreparationTime = Math.max(...kitchenItems.map(item => item.preparationTime * item.quantity), 15);
+
+        const order: KitchenOrder = {
+            id: `order_${Date.now()}`,
+            orderNumber,
+            customerName: customerInfo.name,
+            customerPhone: customerInfo.phone,
+            deliveryAddress: customerInfo.address,
+            items: kitchenItems,
+            totalAmount: get().getTotalPrice(),
+            status: 'pending',
+            priority: 'normal',
+            estimatedTime: totalPreparationTime,
+            createdAt: new Date(),
+            notes: customerInfo.notes,
+            paymentStatus: 'pending',
+            orderType: customerInfo.type,
+        };
+
+        return order;
+    },
 }));

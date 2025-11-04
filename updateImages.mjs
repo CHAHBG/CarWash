@@ -1,4 +1,4 @@
-import { Client, Databases, Query } from 'node-appwrite';
+import { Client, Databases } from 'node-appwrite';
 import { readFileSync } from 'fs';
 
 // Configuration Appwrite

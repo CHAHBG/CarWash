@@ -1,17 +1,20 @@
-import {FlatList, Text, View, TouchableOpacity, Image} from 'react-native'
-import {SafeAreaView} from "react-native-safe-area-context";
-import useAppwrite from "@/lib/useAppwrite";
-import {getCategories, getMenu} from "@/lib/appwrite";
-import {useState, useEffect} from "react";
-import CartButton from "@/components/CartButton";
-import cn from "clsx";
-import {MenuItem} from "@/type";
-import { useCartStore } from "@/store/cart.store";
-import { useLocalSearchParams } from "expo-router";
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Platform, ActivityIndicator } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useAppwrite from '@/lib/useAppwrite';
+import { getCategories, getMenu } from '@/lib/appwrite';
+import MenuItemCard from '@/components/MenuItemCard';
+import { MenuItem as DBMenuItem } from '@/type';
+import { MenuItem as EnrichedMenuItem } from '@/types/menu.types';
+import { getCustomizationsForItem } from '@/lib/customizationData';
+import CartButton from '@/components/CartButton';
+import cn from 'clsx';
 
 const Menu = () => {
     const params = useLocalSearchParams<{category?: string}>();
     const [selectedCategory, setSelectedCategory] = useState<string>(params.category || '');
+    const insets = useSafeAreaInsets();
     
     useEffect(() => {
         if (params.category !== undefined) {
@@ -19,206 +22,160 @@ const Menu = () => {
         }
     }, [params.category]);
     
-    // Mapper les catégories spéciales vers plusieurs catégories réelles
-    const getCategoryFilter = (category: string): string[] => {
-        if (category === 'boissons') {
-            return ['jus', 'cafe']; // Jus Naturel + Café
-        }
-        if (category === 'grillades') {
-            return ['poulet-grille']; // Poulet Grillé
-        }
-        if (category === '') {
-            return []; // Tous les produits
-        }
-        return [category]; // Catégorie simple
-    };
-    
-    const categoryFilters = getCategoryFilter(selectedCategory);
-    
+    // Fetch all menu items
     const { data: menu, loading } = useAppwrite({ 
         fn: getMenu, 
         params: { 
-            category: '', // Charger tous les produits
+            category: '', 
             query: '', 
             limit: 100 
         } 
     });
     
     const { data: categories } = useAppwrite({ fn: getCategories });
-    const { addItem } = useCartStore();
-
-    // Filtrer les données côté client selon la catégorie sélectionnée
-    const filteredMenu = menu?.filter((item: any) => {
-        if (selectedCategory === '') return true; // Tout afficher
-        if (categoryFilters.length > 0) {
-            return categoryFilters.includes(item.category);
-        }
-        return item.category === selectedCategory;
-    }) || [];
-
-    const handleAddToCart = (item: MenuItem) => {
-        addItem({
+    
+    // Convert database menu items to enriched menu items with customizations
+    const convertToEnrichedMenuItem = (item: DBMenuItem): EnrichedMenuItem => {
+        // Use local customizations (database presets can be added later)
+        // For now, keep using the smart local assignment
+        const customizations = getCustomizationsForItem(item.name, item.category);
+        
+        return {
             id: item.$id,
             name: item.name,
+            description: item.description,
             price: item.price,
-            image_url: item.image || '',
-            customizations: []
-        });
+            image: item.image,
+            category: item.category,
+            customizations: customizations,
+            preparationTime: item.preparationTime || 15,
+            isPopular: item.featured || false,
+        };
     };
+    
+    // Filter items based on selected category
+    const filteredMenu = (menu as DBMenuItem[] | undefined)?.filter((item) => {
+        if (selectedCategory === '') return true;
+        return item.category === selectedCategory;
+    }).map(convertToEnrichedMenuItem) || [];
 
-    const CategoryFilter = () => (
-        <View className="mb-6">
-            <View className="flex-row flex-wrap gap-3">
-                <TouchableOpacity
-                    className={cn(
-                        "px-5 py-3 rounded-full",
-                        selectedCategory === '' 
-                            ? "border-2" 
-                            : "bg-white border border-gray-200"
-                    )}
-                    style={selectedCategory === '' ? {
-                        backgroundColor: '#E63946',
-                        borderColor: '#E63946',
-                    } : {}}
-                    onPress={() => setSelectedCategory('')}
-                >
-                    <Text className={cn(
-                        "text-sm font-semibold",
-                        selectedCategory === '' ? "text-white" : "text-gray-700"
-                    )}>
-                        Tout
-                    </Text>
-                </TouchableOpacity>
-
-                {categories?.map((cat: any) => {
-                    const isActive = selectedCategory === cat.slug;
-                    return (
+    return (
+        <SafeAreaView className="flex-1 bg-gray-50">
+            <StatusBar 
+                barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} 
+                backgroundColor="#F9FAFB" 
+            />
+            
+            {/* Header */}
+            <View className="px-6 py-4 bg-white border-b border-gray-100">
+                <View className="flex-row items-center justify-between">
                     <TouchableOpacity
-                        key={cat.$id}
+                        onPress={() => router.back()}
+                        className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center"
+                    >
+                        <Text className="text-gray-600 font-bold text-lg">←</Text>
+                    </TouchableOpacity>
+                    <Text className="text-xl font-quicksand-bold text-gray-900">Notre Menu</Text>
+                    <CartButton />
+                </View>
+            </View>
+
+            {/* Categories */}
+            <View className="mb-4">
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="py-4"
+                    contentContainerStyle={{ paddingHorizontal: 24 }}
+                >
+                    <TouchableOpacity
                         className={cn(
-                            "px-5 py-3 rounded-full",
-                            isActive ? "border-2" : "bg-white border border-gray-200"
+                            "px-5 py-3 rounded-full mr-3",
+                            selectedCategory === '' 
+                                ? "border-2" 
+                                : "bg-white border border-gray-200"
                         )}
-                        style={isActive ? {
+                        style={selectedCategory === '' ? {
                             backgroundColor: '#E63946',
                             borderColor: '#E63946',
                         } : {}}
-                        onPress={() => setSelectedCategory(cat.slug)}
+                        onPress={() => setSelectedCategory('')}
                     >
                         <Text className={cn(
-                            "text-sm font-bold",
-                            isActive ? "text-white" : "text-gray-700"
+                            "text-sm font-semibold",
+                            selectedCategory === '' ? "text-white" : "text-gray-700"
                         )}>
-                            {cat.icon} {cat.name}
+                            Tout
                         </Text>
                     </TouchableOpacity>
-                    );
-                })}
+
+                    {categories?.map((cat: any) => {
+                        const isActive = selectedCategory === cat.slug;
+                        return (
+                            <TouchableOpacity
+                                key={cat.$id}
+                                className={cn(
+                                    "px-5 py-3 rounded-full mr-3",
+                                    isActive ? "border-2" : "bg-white border border-gray-200"
+                                )}
+                                style={isActive ? {
+                                    backgroundColor: '#E63946',
+                                    borderColor: '#E63946',
+                                } : {}}
+                                onPress={() => setSelectedCategory(cat.slug)}
+                            >
+                                <Text className={cn(
+                                    "text-sm font-bold",
+                                    isActive ? "text-white" : "text-gray-700"
+                                )}>
+                                    {cat.icon} {cat.name}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
             </View>
-        </View>
-    );
 
-    const MenuItemCard = ({ item }: { item: MenuItem }) => (
-        <TouchableOpacity 
-            className="bg-white rounded-3xl mb-5 overflow-hidden"
-            activeOpacity={0.7}
-            style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.12,
-                shadowRadius: 16,
-                elevation: 8,
-            }}
-        >
-            <View className="flex-row h-40">
-                {/* Image - Prend toute la hauteur */}
-                <View className="w-36 bg-gray-100 items-center justify-center overflow-hidden">
-                    {item.image ? (
-                        <Image 
-                            source={{ uri: item.image }} 
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode="cover"
-                        />
-                    ) : (
-                        <Text className="text-6xl">🍽️</Text>
-                    )}
-                </View>
-
-                {/* Contenu */}
-                <View className="flex-1 p-4 justify-between">
+            {/* Menu Items */}
+            <ScrollView
+                className="flex-1 px-6"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ 
+                    paddingBottom: insets.bottom + 100,
+                    paddingTop: 8 
+                }}
+            >
+                {loading ? (
+                    <View className="flex-1 items-center justify-center py-12">
+                        <ActivityIndicator size="large" color="#E63946" />
+                        <Text className="text-gray-600 mt-4">Chargement du menu...</Text>
+                    </View>
+                ) : filteredMenu.length > 0 ? (
                     <View>
-                        <Text className="text-xl font-extrabold text-gray-900 mb-2" numberOfLines={1}>
-                            {item.name}
+                        <Text className="text-lg font-quicksand-bold text-gray-900 mb-4">
+                            {filteredMenu.length} plat{filteredMenu.length > 1 ? 's' : ''} disponible{filteredMenu.length > 1 ? 's' : ''}
                         </Text>
-                        
-                        <Text className="text-xs text-gray-500 leading-5" numberOfLines={3}>
-                            {item.description}
+                        {filteredMenu.map((item: EnrichedMenuItem) => (
+                            <MenuItemCard
+                                key={item.id}
+                                item={item}
+                            />
+                        ))}
+                    </View>
+                ) : (
+                    <View className="items-center py-12">
+                        <Text className="text-6xl mb-4">🍽️</Text>
+                        <Text className="text-lg font-quicksand-semibold text-gray-600 text-center">
+                            Aucun plat disponible
                         </Text>
-                    </View>
-
-                    <View className="flex-row items-center justify-between">
-                        <View>
-                            <Text className="text-2xl font-extrabold" style={{color: '#E63946'}}>
-                                {item.price}
-                            </Text>
-                            <Text className="text-xs text-gray-500 font-medium">FCFA</Text>
-                        </View>
-
-                        <TouchableOpacity
-                            className="px-6 py-3 rounded-full"
-                            style={{backgroundColor: '#E63946'}}
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                handleAddToCart(item);
-                            }}
-                        >
-                            <Text className="text-white text-sm font-extrabold">
-                                Ajouter
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
-
-    return (
-        <SafeAreaView className="flex-1" style={{backgroundColor: '#F9FAFB'}}>
-            <FlatList
-                data={filteredMenu}
-                renderItem={({ item }) => <MenuItemCard item={item as MenuItem} />}
-                keyExtractor={item => item.$id}
-                contentContainerClassName="px-5 pb-32"
-                ListHeaderComponent={() => (
-                    <View className="my-6">
-                        <View className="flex-between flex-row w-full mb-6">
-                            <View className="flex-start">
-                                <Text className="text-3xl font-extrabold text-gray-900">
-                                    MENU DU JOUR
-                                </Text>
-                                <Text className="text-base text-gray-500 mt-1 font-medium">
-                                    Nos délicieux plats
-                                </Text>
-                            </View>
-
-                            <CartButton />
-                        </View>
-
-                        <CategoryFilter />
+                        <Text className="text-sm text-gray-500 text-center mt-2">
+                            {selectedCategory ? 'dans cette catégorie pour le moment' : 'pour le moment'}
+                        </Text>
                     </View>
                 )}
-                ListEmptyComponent={() => (
-                    !loading && (
-                        <View className="items-center justify-center py-20">
-                            <Text className="text-gray-500 text-center">
-                                Aucun produit disponible
-                            </Text>
-                        </View>
-                    )
-                )}
-            />
+            </ScrollView>
         </SafeAreaView>
-    )
-}
+    );
+};
 
-export default Menu
+export default Menu;

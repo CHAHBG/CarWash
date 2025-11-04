@@ -31,6 +31,8 @@ export default function AuthLayout() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+                    scrollEnabled={true}
+                    nestedScrollEnabled={false}
                 >
                     <View className="px-6 pt-12 pb-10 bg-white rounded-b-[32px] shadow-sm shadow-black/10">
                         <View className="flex-row items-center">

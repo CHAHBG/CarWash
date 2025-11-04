@@ -188,6 +188,8 @@ export const images = {
     salad,
     success,
     tomatoes,
+    grilledChicken,
+    drinks,
     arrowBack,
     arrowDown,
     arrowRight,

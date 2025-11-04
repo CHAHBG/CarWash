@@ -12,6 +12,8 @@ interface LoyaltyBannerProps {
     onDismiss?: () => void;
 }
 
+const LOYALTY_POINTS = '1 280';
+
 const LoyaltyBanner = ({ showOnHome = false, onDismiss }: LoyaltyBannerProps) => {
     const { isAuthenticated } = useAuthStore();
 
@@ -23,16 +25,25 @@ const LoyaltyBanner = ({ showOnHome = false, onDismiss }: LoyaltyBannerProps) =>
     };
     return (
         <View
-            className="border rounded-2xl p-4"
+            className="border rounded-3xl p-5"
             style={{ backgroundColor: '#FFF6DF', borderColor: '#FCD34D' }}
         >
             <View className="flex-row items-start">
-                <Text className="text-2xl mr-3">🎁</Text>
+                <Text className="text-3xl mr-3">🎁</Text>
                 <View className="flex-1">
-                    <Text className="text-base font-bold text-dark-100">
-                        Points fidélité disponibles
-                    </Text>
-                    <Text className="text-sm text-gray-700 mt-1">
+                    <View className="flex-row items-center justify-between">
+                        <Text className="text-base font-bold text-dark-100">
+                            Points fidélité disponibles
+                        </Text>
+                        {showOnHome && (
+                            <View className="px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(230,57,70,0.12)' }}>
+                                <Text className="text-xs font-semibold" style={{ color: '#E63946' }}>
+                                    {LOYALTY_POINTS} pts
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                    <Text className="text-sm text-gray-700 mt-2">
                         {showOnHome
                             ? "Activez votre compte pour débloquer les avantages et suivre vos points."
                             : "En créant un compte, vos commandes génèrent automatiquement des récompenses."

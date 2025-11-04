@@ -9,6 +9,8 @@ export interface MenuItem extends Models.Document {
     available?: boolean;
     featured?: boolean;
     order?: number;
+    customizationPresetId?: string; // References customization_presets collection
+    preparationTime?: number; // in minutes
 }
 
 export interface Category extends Models.Document {
@@ -52,6 +54,8 @@ export interface CartCustomization {
     name: string;
     price: number;
     type: string;
+    category: string;
+    icon: string;
 }
 
 export interface CartItemType {

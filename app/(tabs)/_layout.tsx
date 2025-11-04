@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Image, Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Image, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
@@ -7,7 +7,7 @@ import { BlurView } from 'expo-blur';
 import { images } from '@/constants';
 import { TabBarIconProps } from '@/type';
 
-const TabBarIcon = ({ focused, icon, title }: TabBarIconProps) => (
+const TabBarIcon = ({ focused, icon }: Omit<TabBarIconProps, 'title'>) => (
     <View style={[styles.tabIcon, focused && styles.tabIconActive]}>
         <Image
             source={icon}
@@ -15,9 +15,6 @@ const TabBarIcon = ({ focused, icon, title }: TabBarIconProps) => (
             resizeMode="contain"
             tintColor={focused ? '#E63946' : '#7C7F8C'}
         />
-        <Text style={[styles.tabLabel, focused ? styles.tabLabelActive : styles.tabLabelInactive]}>
-            {title}
-        </Text>
     </View>
 );
 
@@ -40,15 +37,15 @@ export default function TabLayout() {
         height: baseHeight + paddingBottom,
         position: 'absolute' as const,
         bottom: floatingOffset,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
-        borderColor: 'rgba(231, 234, 242, 0.45)',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
         overflow: 'hidden' as const,
         shadowColor: '#0F172A',
         shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: Platform.OS === 'ios' ? 0.18 : 0.12,
-        shadowRadius: 24,
-        elevation: Platform.OS === 'ios' ? 0 : 8,
+        shadowOpacity: Platform.OS === 'ios' ? 0.25 : 0.18,
+        shadowRadius: 30,
+        elevation: Platform.OS === 'ios' ? 0 : 12,
         zIndex: 30,
     }), [horizontalMargin, isCompactWidth, paddingBottom, baseHeight, floatingOffset]);
 
@@ -71,8 +68,9 @@ export default function TabLayout() {
                 tabBarBackground: () => (
                     <BlurView
                         tint="light"
-                        intensity={65}
+                        intensity={80}
                         style={[StyleSheet.absoluteFill, styles.tabBackground]}
+                        experimentalBlurMethod="dimezisBlurView"
                     />
                 ),
             }}
@@ -81,14 +79,14 @@ export default function TabLayout() {
                 name='index'
                 options={{
                     title: 'Home',
-                    tabBarIcon: ({ focused }) => <TabBarIcon title="Home" icon={images.home} focused={focused} />
+                    tabBarIcon: ({ focused }) => <TabBarIcon icon={images.home} focused={focused} />
                 }}
             />
             <Tabs.Screen
                 name='search'
                 options={{
                     title: 'Search',
-                    tabBarIcon: ({ focused }) => <TabBarIcon title="Search" icon={images.search} focused={focused} />
+                    tabBarIcon: ({ focused }) => <TabBarIcon icon={images.search} focused={focused} />
                 }}
             />
             <Tabs.Screen
@@ -101,14 +99,14 @@ export default function TabLayout() {
                 name='cart'
                 options={{
                     title: 'Cart',
-                    tabBarIcon: ({ focused }) => <TabBarIcon title="Cart" icon={images.bag} focused={focused} />
+                    tabBarIcon: ({ focused }) => <TabBarIcon icon={images.bag} focused={focused} />
                 }}
             />
             <Tabs.Screen
                 name='profile'
                 options={{
                     title: 'Profile',
-                    tabBarIcon: ({ focused }) => <TabBarIcon title="Profile" icon={images.person} focused={focused} />
+                    tabBarIcon: ({ focused }) => <TabBarIcon icon={images.person} focused={focused} />
                 }}
             />
             <Tabs.Screen
@@ -116,7 +114,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Admin',
                     href: null, // Cache l'onglet de la navigation
-                    tabBarIcon: ({ focused }) => <TabBarIcon title="Admin" icon={images.person} focused={focused} />
+                    tabBarIcon: ({ focused }) => <TabBarIcon icon={images.person} focused={focused} />
                 }}
             />
         </Tabs>
